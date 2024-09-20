@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PDO;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -30,6 +31,17 @@ class PostController extends Controller
     }
     public function store(Request $request)
     {
+//        dd($_POST['title']);
+        $connection=new PDO("mysql:host=localhost;dbname=laravel","root","");
+//        $result=$connection->query("select * from posts");
+//        $result=$connection->query("insert into posts (title,body) values('pdo','first pdo test')");
+//        $result=$connection->query("insert into posts set title='new',body='new way'");
+//        $result=$connection->query("update posts set title='ok' where title='new'");
+        $result=$connection->prepare("update posts set title = :title where title='pdo'");
+        $result->bindParam(':title',$_POST['title']);
+        $result->execute();
+//        return print_r($result->fetch(PDO::FETCH_ASSOC));
+        return $result->columnCount();
         $post=Post::create([
             'title'=>$request->title,
             'body'=>$request->body,
